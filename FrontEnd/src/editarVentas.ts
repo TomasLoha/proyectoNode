@@ -1,38 +1,7 @@
-$(()=>{
-
-    type Producto = {
-        id: number;
-        codigoProducto: string;
-        denominacion: string;
-        precioVenta: number;
-    }
-    
-    type PedidoVentaDetalle = {
-        id: number
-        idpedidoventa: number; // Relacionado con PedidoVenta
-        idproducto: number; // Relacionado con Producto
-        cantidad: number;
-        subtotal: number;
-        existe: number
-    }
-    
-    type PedidoVenta = {
-        id: number;
-        idcliente: number; // Relacionado con Cliente
-        fechaPedido: string;
-        nroComprobante: number;
-        formaPago: string;
-        observaciones: string;
-        totalPedido: number;
-        existe: number
-    }
-    
-    type Cliente = {
-        id: number;
-        cuit: string;
-        razonSocial: string;
-    }
-
+import { Cliente } from "models/Cliente";
+import { PedidoVenta } from "models/PedidoVenta";
+import { PedidoVentaDetalle } from "models/PedidoVentaDetalle";
+import { Producto } from "models/Producto";
 
 
 
@@ -401,8 +370,6 @@ $(()=>{
 
     buscarClientes();
     buscarIds();
-
-})
 
 //MODELO DE CLASES POO ARREGLADO (ACTUALIZAR PEDIDOS Y RECIBIDOS DEL BACK Y FRONT CON EL MODELO NUEVO\),
 //  EL BORRADO NO DEBE SUCEDER HASTA QUE SE ACTUALIZA Y EL USER DEBE PODER REVERTIR EL BORRADO DE DETALLES
