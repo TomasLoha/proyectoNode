@@ -138,7 +138,9 @@ export const crearPedidosVenta = async (req: Request, res: Response) => {
 export const updatePedidoVenta = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params; // ID del pedido a actualizar
     const pedidoData: PedidoVenta = req.body;
-
+    console.log(id);
+    console.log("Pedido Entrante-----------------------------");
+    console.log(pedidoData);
     const queryRunner = AppDataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();

@@ -40,7 +40,7 @@ router.get('/pedido_venta',getPedidosVenta);
 router.get('/pedido_venta/SINFILTRO',getPedidosVentaSinFiltro);
 router.get('/pedido_venta/:id',getPedidosVentaid);
 router.post('/pedido_venta/CREATE',crearPedidosVenta);
-router.put('/pedido_venta/UPDATE',updatePedidoVenta);
+router.put('/pedido_venta/UPDATE/:id',updatePedidoVenta);
 
 //pedido Venta Detalle
 

@@ -125,6 +125,9 @@ exports.crearPedidosVenta = crearPedidosVenta;
 const updatePedidoVenta = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params; // ID del pedido a actualizar
     const pedidoData = req.body;
+    console.log(id);
+    console.log("Pedido Entrante-----------------------------");
+    console.log(pedidoData);
     const queryRunner = conexion_1.AppDataSource.createQueryRunner();
     yield queryRunner.connect();
     yield queryRunner.startTransaction();

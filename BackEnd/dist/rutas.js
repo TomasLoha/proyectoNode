@@ -20,7 +20,7 @@ router.get('/pedido_venta', pedidoVentaController_1.getPedidosVenta);
 router.get('/pedido_venta/SINFILTRO', pedidoVentaController_1.getPedidosVentaSinFiltro);
 router.get('/pedido_venta/:id', pedidoVentaController_1.getPedidosVentaid);
 router.post('/pedido_venta/CREATE', pedidoVentaController_1.crearPedidosVenta);
-router.put('/pedido_venta/UPDATE', pedidoVentaController_1.updatePedidoVenta);
+router.put('/pedido_venta/UPDATE/:id', pedidoVentaController_1.updatePedidoVenta);
 //pedido Venta Detalle
 router.get('/pedido_venta_detalle', PedidoVentaDetalleController_1.getPedidosVentaDetalle);
 router.get('/pedido_venta_detalle/:id', PedidoVentaDetalleController_1.getPedidosVentaDetalleid);
