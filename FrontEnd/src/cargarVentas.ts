@@ -105,6 +105,8 @@ import { Producto } from "models/Producto";
                     actualizarTotalPedido();
 
                     $("#cantidadProducto").val('');
+
+                    mostrarDetalles();
                     
                 }
             })             
@@ -119,8 +121,48 @@ import { Producto } from "models/Producto";
     });
 
 
-        
+    function mostrarDetalles(){
 
+        let divDetalles = $("#detalles")
+        divDetalles.empty()
+
+        let i = 1
+
+        for (const detalle of detalles) {
+            
+            let formDetalle = `
+            <form class="detalleForm" style="width: 30%; margin: 3% auto; height: 22rem; border: solid, black">
+            <label>Detalle: </label><label name="posicion">${i}</label><br>
+            <label name="producto">Producto: ${detalle.producto.denominacion} | Precio: $${detalle.producto.precioVenta}</label><br>
+            <label name="cantidad">Cantidad: ${detalle.cantidad}</label><br>
+            <label>Subtotal: $</label><label name="subtotal">${detalle.subtotal}</label><br>
+            <button type="button" class="borrarDetalle">Borrar</button>
+            </form>
+            `
+
+            divDetalles.append(formDetalle)
+
+            i++;
+
+        }
+
+    }
+
+    $(document).on("click", ".borrarDetalle", function(event){
+        event.preventDefault()
+
+        let form = $(this).closest(".detalleForm")
+        let posicion = parseInt(form.find("label[name='posicion']").text()) - 1;
+        let subtotal = form.find("label[name='subtotal']").text()
+
+        totalPedido -= parseFloat(subtotal as string)
+
+        detalles.splice(posicion, 1)
+
+        actualizarTotalPedido()
+        mostrarDetalles()
+
+    })
 
     function actualizarTotalPedido(){
 

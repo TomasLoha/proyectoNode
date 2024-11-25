@@ -141,22 +141,27 @@ import { PedidoVenta } from "models/PedidoVenta";
             $.ajax({
                 url: `http://localhost:3000/admin/service/pedido_venta/${idBorrar}`,
                 method: "GET",
-                success: (data) => {
+                success: async (data) => {
                     console.log(data);
                     if (data.length > 0) {
                         const pedidoVenta = data[0];  
                         pedidoVenta.existe = 0;
                         console.log("Pedido:", pedidoVenta);
                         // Actualizar el pedido
-                $.ajax({
-                url: `http://localhost:3000/admin/service/pedido_venta/UPDATE/${idBorrar}`,
-                method: "PUT",
-                contentType: "application/json",
-                data: JSON.stringify(pedidoVenta)
-                });
+
+                        await $.ajax({
+                            url: `http://localhost:3000/admin/service/pedido_venta/UPDATE/${idBorrar}`,
+                            method: "PUT",
+                            contentType: "application/json",
+                            data: JSON.stringify(pedidoVenta)
+                        });
+
+                        location.reload()
+
                     } else {
                         alert("No se encontró el pedido.");
                     }
+
                 },
                 error: () => {
                     alert(`No existe el pedido de venta con ID = ${idBorrar}`);

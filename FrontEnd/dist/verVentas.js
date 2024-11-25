@@ -127,24 +127,25 @@ $("#botonBorrar").on("click", (event) => __awaiter(void 0, void 0, void 0, funct
         $.ajax({
             url: `http://localhost:3000/admin/service/pedido_venta/${idBorrar}`,
             method: "GET",
-            success: (data) => {
+            success: (data) => __awaiter(void 0, void 0, void 0, function* () {
                 console.log(data);
                 if (data.length > 0) {
                     const pedidoVenta = data[0];
                     pedidoVenta.existe = 0;
                     console.log("Pedido:", pedidoVenta);
                     // Actualizar el pedido
-                    $.ajax({
+                    yield $.ajax({
                         url: `http://localhost:3000/admin/service/pedido_venta/UPDATE/${idBorrar}`,
                         method: "PUT",
                         contentType: "application/json",
                         data: JSON.stringify(pedidoVenta)
                     });
+                    location.reload();
                 }
                 else {
                     alert("No se encontró el pedido.");
                 }
-            },
+            }),
             error: () => {
                 alert(`No existe el pedido de venta con ID = ${idBorrar}`);
             }

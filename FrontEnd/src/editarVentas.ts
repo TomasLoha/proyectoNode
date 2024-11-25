@@ -3,9 +3,7 @@ import { PedidoVenta } from "models/PedidoVenta";
 import { PedidoVentaDetalle } from "models/PedidoVentaDetalle";
 import { Producto } from "models/Producto";
 
-
-
-
+    let pedidoVentaGlobal: PedidoVenta;
 
     function buscarClientes(){
 
@@ -79,79 +77,61 @@ import { Producto } from "models/Producto";
 
             url: `http://localhost:3000/admin/service/pedido_venta/${idPedido}`,
             method: "GET",
-            success: async(pedidoVenta: PedidoVenta)=>{
+            success: async(data)=>{
 
-                clientes.val(pedidoVenta.idcliente)
+                let pedidoVenta: PedidoVenta = data[0]
+
+                pedidoVentaGlobal = pedidoVenta;
+
+                clientes.val(pedidoVenta.cliente.id)
                 fechaPedido.val(pedidoVenta.fechaPedido)
                 nroComprobante.val(pedidoVenta.nroComprobante)
                 formaPago.val(pedidoVenta.formaPago)
                 observaciones.val(pedidoVenta.observaciones)
                 totalPedido.text(pedidoVenta.totalPedido)
 
+                const contenedorDetalles = $("#contenedorDetalles");
+                contenedorDetalles.empty();
+
                 await $.ajax({
 
-                    url: `http://localhost:3000/admin/service/pedido_venta_detalle`,
+                    url: `http://localhost:3000/admin/service/productos`,
                     method: "GET",
-                    success: async(detalles: PedidoVentaDetalle[])=>{
+                    success: (productos: Producto[])=>{
 
-                        let detallesDeVenta: PedidoVentaDetalle[] = [];
+                        for(const detalleVenta of pedidoVenta.detalles){
 
-                        for(let detalle of detalles){
+                        //cartas Existentes
 
-                            if (detalle.idpedidoventa == idPedido) {
-                                detallesDeVenta.push(detalle);
-                            }
+                            let formDetalle = `
+                            <form style="width: 30%; margin: 3% auto;" data-id="${detalleVenta.id}" class="detalleForm">
+
+                                <label>ID:  </label><label name="idDetalle">${detalleVenta.id}</label><br>
+                                <label>Producto:  </label><select name="producto" id="productos${detalleVenta.id}"></select><br>
+                                <label>Cantidad:  </label><input style="width: 25%; text-align: center;" type="number" name="cantidad" value="${detalleVenta.cantidad}"><br>
+                                <label>Subtotal:  </label><label name="subtotal">${detalleVenta.subtotal}</label><br>
+                                <input type="hidden" name="existe" value="${detalleVenta.existe}">
+                                <div style="display: flex; justify-content: space-evenly;">
+                                    <button type="button" class="borrarDetalle">Borrar</button>                                        
+                                </div>
+
+                            </form>`
+
+                            contenedorDetalles.append(formDetalle);
+                            
+                            let productosDetalle = $(`#productos${detalleVenta.id}`)
+
+                            productos.forEach((producto: Producto)=>{
+
+                                let opcionProducto = `<option value="${producto.id}">${producto.denominacion} | Precio:$${producto.precioVenta}</option>`
+                                productosDetalle.append(opcionProducto)
+
+                            })
+
+                            productosDetalle.val(`${detalleVenta.producto.id}`)
+
 
                         }
-
-                        const contenedorDetalles = $("#contenedorDetalles");
-                        contenedorDetalles.empty();
-
-                        await $.ajax({
-
-                            url: `http://localhost:3000/admin/service/productos`,
-                            method: "GET",
-                            success: (productos: Producto[])=>{
-
-                                for(const detalleVenta of detallesDeVenta){
-
-                                //cartas Existentes
-
-                                    let formDetalle = `
-                                    <form style="width: 30%; margin: 3% auto;" data-id="${detalleVenta.id}" class="detalleForm">
-
-                                        <label>ID:  </label><label name="idDetalle">${detalleVenta.id}</label><br>
-                                        <label>Producto:  </label><select name="producto" id="productos${detalleVenta.id}"></select><br>
-                                        <label>Cantidad:  </label><input style="width: 25%; text-align: center;" type="number" name="cantidad" value="${detalleVenta.cantidad}"><br>
-                                        <label>Subtotal:  </label><label name="subtotal">${detalleVenta.subtotal}</label><br>
-                                        <input type="hidden" name="existe" value="${detalleVenta.existe}">
-                                        <div style="display: flex; justify-content: space-evenly;">
-                                            <button type="button" class="borrarDetalle">Borrar</button>                                        
-                                        </div>
-        
-                                    </form>`
-
-                                    contenedorDetalles.append(formDetalle);
-                                    
-                                    let productosDetalle = $(`#productos${detalleVenta.id}`)
-
-                                    productos.forEach((producto: Producto)=>{
-
-                                        let opcionProducto = `<option value="${producto.id}">${producto.denominacion} | Precio:$${producto.precioVenta}</option>`
-                                        productosDetalle.append(opcionProducto)
-
-                                    })
-
-                                    productosDetalle.val(`${detalleVenta.idproducto}`)
-
-        
-                                }
-
-                            }
-
-                        })
-
-                        
 
                     }
 
@@ -166,7 +146,7 @@ import { Producto } from "models/Producto";
     async function actualizarPedido(){
 
         let idPedido = parseInt($("#idPedido").val() as string);
-        let clientes = $("#clientes").val();
+        let idcliente = $("#clientes").val();
         let fechaPedido = $("#fechaPedido").val();
         let nroComprobante = $("#nroComprobante").val();
         let formaPago = $("#formaPago").val()
@@ -174,21 +154,29 @@ import { Producto } from "models/Producto";
         let totalPedido = 0
         let detallesLlenos = true
 
-        if (idPedido && clientes && fechaPedido && nroComprobante && formaPago && observaciones) {
+        if (idPedido && idcliente && fechaPedido && nroComprobante && formaPago && observaciones) {
             
             let detalles: PedidoVentaDetalle[] = [];
 
-            $("#contenedorDetalles form").each(function(){
+            let forms = $("#contenedorDetalles form").toArray();
 
-                let textoProducto = $(this).find("select[name='producto'] option:selected").text()
+            for (const form of forms) {
+                
+                const $form = $(form)
+                let textoProducto = $form.find("select[name='producto'] option:selected").text()
                 let precioProducto = parseFloat(textoProducto.split("$")[1].trim()); 
-
-                let idDetalle = parseInt($(this).find("label[name='idDetalle']").text().trim());
-                let idproducto = parseInt($(this).find("select[name='producto']").val() as string);
-                let cantidadVal = $(this).find("input[name='cantidad']").val();
+    
+                let idDetalle = parseInt($form.find("label[name='idDetalle']").text().trim());
+                let idproducto = parseInt($form.find("select[name='producto']").val() as string);
+                let productos: Producto[] = await $.ajax({
+                    url: `http://localhost:3000/admin/service/productos/${idproducto}`,
+                    method: "GET"
+                })
+                let producto = productos[0]
+                let cantidadVal = $form.find("input[name='cantidad']").val();
                 let cantidad = cantidadVal ? parseInt(cantidadVal as string) : 0;
                 let subtotal = (cantidad*precioProducto)
-                let existe = $(this).find("input[name='existe']").val();
+                let existe = $form.find("input[name='existe']").val();
                 
                 if (existe == 1) {
                     totalPedido += subtotal
@@ -198,34 +186,38 @@ import { Producto } from "models/Producto";
                     
                     let detalle: PedidoVentaDetalle = {
                         id: idDetalle,
-                        idpedidoventa: idPedido,
-                        idproducto: idproducto,
+                        pedidoVenta: pedidoVentaGlobal,
+                        producto: producto,
                         cantidad: cantidad,
                         subtotal: subtotal,
                         existe: existe as number
                     }
-
+    
                     detalles.push(detalle)
-
+    
                 }else{
                     detallesLlenos = false
                     return alert("Todos los detalles del pedido deben tener sus campos completos!")
                 }
-
-
-            })
+            }            
 
             if (detallesLlenos) {
+
+                let cliente: Cliente = await $.ajax({
+                    url: `http://localhost:3000/admin/service/clientes/${idcliente}`,
+                    method: "GET"
+                })
                 
                 let pedido_venta: PedidoVenta = {
                     id: idPedido,
-                    idcliente: clientes ? parseInt(clientes as string) : 0,
+                    cliente: cliente,
                     fechaPedido: fechaPedido as string,
                     nroComprobante: nroComprobante ? parseInt(nroComprobante as string) : 0,
                     formaPago: formaPago as string,
                     observaciones: observaciones as string,
                     totalPedido: totalPedido,
-                    existe: 1 
+                    existe: 1,
+                    detalles: detalles
                 }            
                 
                 await $.ajax({
@@ -235,53 +227,10 @@ import { Producto } from "models/Producto";
                     contentType: "application/json",
                     data: JSON.stringify(pedido_venta),
                     success: async(response)=>{
-        
-                        for(let detalle of detalles){
-    
-                            if (detalle.id) {
-                                
-                                await $.ajax({
-        
-                                    url: `http://localhost:3000/admin/service/pedido_venta_detalle/UPDATE/${detalle.id}`,
-                                    method: "PUT",
-                                    contentType: "application/json",
-                                    data: JSON.stringify(detalle),
-                                    success: ()=>{
-    
-                                    },
-                                    error: (error)=>{
-                                        console.error(`No se pudo actualizar el detalle con id = ${detalle.id}`, error)
-                                        return alert("Error al actualizar los detalles ya existentes")
-                                    }
-        
-                                })
-    
-                            }else{
-    
-                                await $.ajax({
-    
-                                    url: `http://localhost:3000/admin/service/pedido_venta_detalle/CREATE`,
-                                    method: "POST",
-                                    contentType: "application/json",
-                                    data: JSON.stringify(detalle),
-                                    success: ()=>{
-                                        
-                                    },
-                                    error: (error)=>{
-                                        console.error("No se pudo crear el detalle nuevo", error)
-                                        return alert("Error al crear los detalles nuevos")
-                                    }
-    
-                                })
-    
-                            }
-    
-    
-                        }
     
                         alert("El pedido de venta y sus detalles fueron actualizados")
     
-                        buscarId()
+                        await buscarId()
         
                     },
                     error: (error)=>{
@@ -320,7 +269,7 @@ import { Producto } from "models/Producto";
                         <label>Subtotal: </label><label name="subtotal"></label><br>
                         <input type="hidden" value="1" name="existe">
                         </form>
-`
+                        `
 
         contenedorDetalles.append(formDetalle);
 
@@ -359,12 +308,24 @@ import { Producto } from "models/Producto";
     $(document).on("click", ".borrarDetalle", async function(event){
         event.preventDefault()
 
-        let id = $(this).closest(".detalleForm").data("id");
-        $(this).closest(".detalleForm").find("input[name='existe']").val(0)
+        let form = $(this).closest(".detalleForm")
 
-        alert(`El detalle con ID = ${id} fue borrado con exito!`)
+        let id = form.data("id");
+        let existe = form.find("input[name='existe']")
 
-        actualizarPedido();
+        if (existe.val() == 1) {
+         
+            existe.val(0)
+            form.css("background-color", "grey")
+            $(this).text("Recuperar")
+
+        }else{
+
+            existe.val(1)
+            form.css("background-color", "#fff5c4")
+            $(this).text("Borrar")
+
+        }
 
     })
 

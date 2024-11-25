@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+let pedidoVentaGlobal;
 function buscarClientes() {
     let clientes = $("#clientes");
     $.ajax({
@@ -53,55 +54,45 @@ function buscarId() {
         yield $.ajax({
             url: `http://localhost:3000/admin/service/pedido_venta/${idPedido}`,
             method: "GET",
-            success: (pedidoVenta) => __awaiter(this, void 0, void 0, function* () {
-                clientes.val(pedidoVenta.idcliente);
+            success: (data) => __awaiter(this, void 0, void 0, function* () {
+                let pedidoVenta = data[0];
+                pedidoVentaGlobal = pedidoVenta;
+                clientes.val(pedidoVenta.cliente.id);
                 fechaPedido.val(pedidoVenta.fechaPedido);
                 nroComprobante.val(pedidoVenta.nroComprobante);
                 formaPago.val(pedidoVenta.formaPago);
                 observaciones.val(pedidoVenta.observaciones);
                 totalPedido.text(pedidoVenta.totalPedido);
+                const contenedorDetalles = $("#contenedorDetalles");
+                contenedorDetalles.empty();
                 yield $.ajax({
-                    url: `http://localhost:3000/admin/service/pedido_venta_detalle`,
+                    url: `http://localhost:3000/admin/service/productos`,
                     method: "GET",
-                    success: (detalles) => __awaiter(this, void 0, void 0, function* () {
-                        let detallesDeVenta = [];
-                        for (let detalle of detalles) {
-                            if (detalle.idpedidoventa == idPedido) {
-                                detallesDeVenta.push(detalle);
-                            }
-                        }
-                        const contenedorDetalles = $("#contenedorDetalles");
-                        contenedorDetalles.empty();
-                        yield $.ajax({
-                            url: `http://localhost:3000/admin/service/productos`,
-                            method: "GET",
-                            success: (productos) => {
-                                for (const detalleVenta of detallesDeVenta) {
-                                    //cartas Existentes
-                                    let formDetalle = `
-                                    <form style="width: 30%; margin: 3% auto;" data-id="${detalleVenta.id}" class="detalleForm">
+                    success: (productos) => {
+                        for (const detalleVenta of pedidoVenta.detalles) {
+                            //cartas Existentes
+                            let formDetalle = `
+                            <form style="width: 30%; margin: 3% auto;" data-id="${detalleVenta.id}" class="detalleForm">
 
-                                        <label>ID:  </label><label name="idDetalle">${detalleVenta.id}</label><br>
-                                        <label>Producto:  </label><select name="producto" id="productos${detalleVenta.id}"></select><br>
-                                        <label>Cantidad:  </label><input style="width: 25%; text-align: center;" type="number" name="cantidad" value="${detalleVenta.cantidad}"><br>
-                                        <label>Subtotal:  </label><label name="subtotal">${detalleVenta.subtotal}</label><br>
-                                        <input type="hidden" name="existe" value="${detalleVenta.existe}">
-                                        <div style="display: flex; justify-content: space-evenly;">
-                                            <button type="button" class="borrarDetalle">Borrar</button>                                        
-                                        </div>
-        
-                                    </form>`;
-                                    contenedorDetalles.append(formDetalle);
-                                    let productosDetalle = $(`#productos${detalleVenta.id}`);
-                                    productos.forEach((producto) => {
-                                        let opcionProducto = `<option value="${producto.id}">${producto.denominacion} | Precio:$${producto.precioVenta}</option>`;
-                                        productosDetalle.append(opcionProducto);
-                                    });
-                                    productosDetalle.val(`${detalleVenta.idproducto}`);
-                                }
-                            }
-                        });
-                    })
+                                <label>ID:  </label><label name="idDetalle">${detalleVenta.id}</label><br>
+                                <label>Producto:  </label><select name="producto" id="productos${detalleVenta.id}"></select><br>
+                                <label>Cantidad:  </label><input style="width: 25%; text-align: center;" type="number" name="cantidad" value="${detalleVenta.cantidad}"><br>
+                                <label>Subtotal:  </label><label name="subtotal">${detalleVenta.subtotal}</label><br>
+                                <input type="hidden" name="existe" value="${detalleVenta.existe}">
+                                <div style="display: flex; justify-content: space-evenly;">
+                                    <button type="button" class="borrarDetalle">Borrar</button>                                        
+                                </div>
+
+                            </form>`;
+                            contenedorDetalles.append(formDetalle);
+                            let productosDetalle = $(`#productos${detalleVenta.id}`);
+                            productos.forEach((producto) => {
+                                let opcionProducto = `<option value="${producto.id}">${producto.denominacion} | Precio:$${producto.precioVenta}</option>`;
+                                productosDetalle.append(opcionProducto);
+                            });
+                            productosDetalle.val(`${detalleVenta.producto.id}`);
+                        }
+                    }
                 });
             })
         });
@@ -110,24 +101,31 @@ function buscarId() {
 function actualizarPedido() {
     return __awaiter(this, void 0, void 0, function* () {
         let idPedido = parseInt($("#idPedido").val());
-        let clientes = $("#clientes").val();
+        let idcliente = $("#clientes").val();
         let fechaPedido = $("#fechaPedido").val();
         let nroComprobante = $("#nroComprobante").val();
         let formaPago = $("#formaPago").val();
         let observaciones = $("#observaciones").val();
         let totalPedido = 0;
         let detallesLlenos = true;
-        if (idPedido && clientes && fechaPedido && nroComprobante && formaPago && observaciones) {
+        if (idPedido && idcliente && fechaPedido && nroComprobante && formaPago && observaciones) {
             let detalles = [];
-            $("#contenedorDetalles form").each(function () {
-                let textoProducto = $(this).find("select[name='producto'] option:selected").text();
+            let forms = $("#contenedorDetalles form").toArray();
+            for (const form of forms) {
+                const $form = $(form);
+                let textoProducto = $form.find("select[name='producto'] option:selected").text();
                 let precioProducto = parseFloat(textoProducto.split("$")[1].trim());
-                let idDetalle = parseInt($(this).find("label[name='idDetalle']").text().trim());
-                let idproducto = parseInt($(this).find("select[name='producto']").val());
-                let cantidadVal = $(this).find("input[name='cantidad']").val();
+                let idDetalle = parseInt($form.find("label[name='idDetalle']").text().trim());
+                let idproducto = parseInt($form.find("select[name='producto']").val());
+                let productos = yield $.ajax({
+                    url: `http://localhost:3000/admin/service/productos/${idproducto}`,
+                    method: "GET"
+                });
+                let producto = productos[0];
+                let cantidadVal = $form.find("input[name='cantidad']").val();
                 let cantidad = cantidadVal ? parseInt(cantidadVal) : 0;
                 let subtotal = (cantidad * precioProducto);
-                let existe = $(this).find("input[name='existe']").val();
+                let existe = $form.find("input[name='existe']").val();
                 if (existe == 1) {
                     totalPedido += subtotal;
                 }
@@ -135,8 +133,8 @@ function actualizarPedido() {
                 if (idproducto && cantidad) {
                     let detalle = {
                         id: idDetalle,
-                        idpedidoventa: idPedido,
-                        idproducto: idproducto,
+                        pedidoVenta: pedidoVentaGlobal,
+                        producto: producto,
                         cantidad: cantidad,
                         subtotal: subtotal,
                         existe: existe
@@ -147,17 +145,22 @@ function actualizarPedido() {
                     detallesLlenos = false;
                     return alert("Todos los detalles del pedido deben tener sus campos completos!");
                 }
-            });
+            }
             if (detallesLlenos) {
+                let cliente = yield $.ajax({
+                    url: `http://localhost:3000/admin/service/clientes/${idcliente}`,
+                    method: "GET"
+                });
                 let pedido_venta = {
                     id: idPedido,
-                    idcliente: clientes ? parseInt(clientes) : 0,
+                    cliente: cliente,
                     fechaPedido: fechaPedido,
                     nroComprobante: nroComprobante ? parseInt(nroComprobante) : 0,
                     formaPago: formaPago,
                     observaciones: observaciones,
                     totalPedido: totalPedido,
-                    existe: 1
+                    existe: 1,
+                    detalles: detalles
                 };
                 yield $.ajax({
                     url: `http://localhost:3000/admin/service/pedido_venta/UPDATE/${idPedido}`,
@@ -165,38 +168,8 @@ function actualizarPedido() {
                     contentType: "application/json",
                     data: JSON.stringify(pedido_venta),
                     success: (response) => __awaiter(this, void 0, void 0, function* () {
-                        for (let detalle of detalles) {
-                            if (detalle.id) {
-                                yield $.ajax({
-                                    url: `http://localhost:3000/admin/service/pedido_venta_detalle/UPDATE/${detalle.id}`,
-                                    method: "PUT",
-                                    contentType: "application/json",
-                                    data: JSON.stringify(detalle),
-                                    success: () => {
-                                    },
-                                    error: (error) => {
-                                        console.error(`No se pudo actualizar el detalle con id = ${detalle.id}`, error);
-                                        return alert("Error al actualizar los detalles ya existentes");
-                                    }
-                                });
-                            }
-                            else {
-                                yield $.ajax({
-                                    url: `http://localhost:3000/admin/service/pedido_venta_detalle/CREATE`,
-                                    method: "POST",
-                                    contentType: "application/json",
-                                    data: JSON.stringify(detalle),
-                                    success: () => {
-                                    },
-                                    error: (error) => {
-                                        console.error("No se pudo crear el detalle nuevo", error);
-                                        return alert("Error al crear los detalles nuevos");
-                                    }
-                                });
-                            }
-                        }
                         alert("El pedido de venta y sus detalles fueron actualizados");
-                        buscarId();
+                        yield buscarId();
                     }),
                     error: (error) => {
                         console.error(`Ocurrio un error al intentar actualizar:`, error);
@@ -226,7 +199,7 @@ $("#agregarDetalle").on("click", (event) => {
                         <label>Subtotal: </label><label name="subtotal"></label><br>
                         <input type="hidden" value="1" name="existe">
                         </form>
-`;
+                        `;
     contenedorDetalles.append(formDetalle);
     $.ajax({
         url: "http://localhost:3000/admin/service/productos",
@@ -249,10 +222,19 @@ $(document).on("click", ".cerrarForm", function (event) {
 $(document).on("click", ".borrarDetalle", function (event) {
     return __awaiter(this, void 0, void 0, function* () {
         event.preventDefault();
-        let id = $(this).closest(".detalleForm").data("id");
-        $(this).closest(".detalleForm").find("input[name='existe']").val(0);
-        alert(`El detalle con ID = ${id} fue borrado con exito!`);
-        actualizarPedido();
+        let form = $(this).closest(".detalleForm");
+        let id = form.data("id");
+        let existe = form.find("input[name='existe']");
+        if (existe.val() == 1) {
+            existe.val(0);
+            form.css("background-color", "grey");
+            $(this).text("Recuperar");
+        }
+        else {
+            existe.val(1);
+            form.css("background-color", "#fff5c4");
+            $(this).text("Borrar");
+        }
     });
 });
 buscarClientes();

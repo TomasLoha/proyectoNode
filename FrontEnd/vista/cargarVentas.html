@@ -31,23 +31,27 @@
 
     <h2 style="text-align: center;">Nueva Venta</h2>
 
-    <form style="margin: 3% auto; width: 60%;">
-
-        <label>Cliente: </label><select id="clientes"></select><br>
-        <label>Fecha del pedido: </label><input id="fechaPedido" type="date"><br>
-        <label>Numero Comprobante: </label><input type="number" id="comprobantePedido"><br>
-        <label>Forma de pago: </label><input id="formaPago" type="text"><br>
-        <label>Observaciones: </label><input id="observaciones" type="text"><br>
-        <label>Total Pedido: </label><label id="totalPedido"></label><br><br>
-
-        <h2>Detalle Venta</h2>
-        <label>Producto: </label><select id="productos"></select><button id="agregarProducto" style="margin: auto 4%;">Agregar</button><br>
-        <label>Cantidad de productos: </label><input id="cantidadProducto" type="number">
-        <div style="text-align: center;">
-            <button id="crearPedido" style="margin: 1% auto;">CREAR</button>
+    <form style="margin: 3% auto; width: 80%; display: flex;">
+        <div style="width: 50%;">
+            
+            <label>Cliente: </label><select id="clientes"></select><br>
+            <label>Fecha del pedido: </label><input id="fechaPedido" type="date"><br>
+            <label>Numero Comprobante: </label><input type="number" id="comprobantePedido"><br>
+            <label>Forma de pago: </label><input id="formaPago" type="text"><br>
+            <label>Observaciones: </label><input id="observaciones" type="text"><br>
+            <label>Total Pedido: </label><label id="totalPedido"></label><br><br>
+    
+            <h2>Detalle Venta</h2>
+            <label>Producto: </label><select id="productos"></select><button id="agregarProducto" style="margin: auto 4%;">Agregar</button><br>
+            <label>Cantidad de productos: </label><input id="cantidadProducto" type="number">
+            <div style="text-align: center;">
+                <button id="crearPedido" style="margin: 1% auto;">CREAR</button>
+            </div>
         </div>
 
+        <div id="detalles" style="width: 50%;display: flex; flex-wrap: wrap; background-color: white; border: solid, black;"></div>
     </form>
+
     
 </body>
 </html>
