@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Ventas</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="module" src="/dist/editarVentas.js"></script>
+    <link rel="stylesheet" href="/vista/css/normalize.css">
+    <link rel="stylesheet" href="/vista/css/style.css">
+    <style>
+        form input{
+            margin: 2% 2%;
+        }
+    </style>
+</head>
+<body>
+    
+    <header>
+        <h1>Editar Ventas</h1>
+    </header>
+
+    <nav>
+        <a href="cargarVentas.html">Cargar Ventas</a>
+        <a href="verVentas.html">Buscar/Borrar Ventas</a>
+        <a href="editarVentas.html">Editar Ventas</a>
+    </nav>
+
+    <form style="margin: 3% auto;">
+
+        <label >ID: </label><select style="width: 20%; text-align: center;" id="idPedido"></select><button style="margin-left: 12%; margin-bottom: 3%;" id="buscarId">BUSCAR</button><br>
+        <label>Cliente: </label><select id="clientes"></select><br>
+        <label>Fecha del pedido: </label><input required id="fechaPedido" type="date"><br>
+        <label>Numero Comprobante: </label><input required type="number" id="nroComprobante"><br>
+        <label>Forma de pago: </label><input required id="formaPago" type="text"><br>
+        <label>Observaciones: </label><input required id="observaciones" type="text"><br>
+        <label>Total Pedido: </label><label id="totalPedido"></label><br><br>
+        <div style="text-align: center;">
+            <button id="actualizarPedido" style="margin: 1% auto;">ACTUALIZAR</button>
+        </div>
+
+    </form>
+    
+    <div style="text-align: center;">
+        <h2 style="text-align: center;">Detalles de la venta</h2>
+        <button id="agregarDetalle" type="button" style="align-items: center;">Agregar</button><br>
+    </div>
+
+    <div id="contenedorDetalles" style="display: flex; flex-wrap: wrap;"></div>
+
+</body>
+</html>

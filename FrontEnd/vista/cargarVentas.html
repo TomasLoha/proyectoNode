@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cargar Ventas</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="module" src="/dist/cargarVentas.js"></script>
+    <link rel="stylesheet" href="/vista/css/normalize.css">
+    <link rel="stylesheet" href="/vista/css/style.css">
+    <style>
+        form input{
+            margin: 2% auto;
+        }
+        form label{
+            margin: 2% auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Cargar Venta</h1>
+    </header>
+
+    <nav>
+        <a href="cargarVentas.html">Cargar Ventas</a>
+        <a href="verVentas.html">Buscar/Borrar Ventas</a>
+        <a href="editarVentas.html">Editar Ventas</a>
+    </nav>
+
+    <h2 style="text-align: center;">Nueva Venta</h2>
+
+    <form style="margin: 3% auto; width: 60%;">
+
+        <label>Cliente: </label><select id="clientes"></select><br>
+        <label>Fecha del pedido: </label><input id="fechaPedido" type="date"><br>
+        <label>Numero Comprobante: </label><input type="number" id="comprobantePedido"><br>
+        <label>Forma de pago: </label><input id="formaPago" type="text"><br>
+        <label>Observaciones: </label><input id="observaciones" type="text"><br>
+        <label>Total Pedido: </label><label id="totalPedido"></label><br><br>
+
+        <h2>Detalle Venta</h2>
+        <label>Producto: </label><select id="productos"></select><button id="agregarProducto" style="margin: auto 4%;">Agregar</button><br>
+        <label>Cantidad de productos: </label><input id="cantidadProducto" type="number">
+        <div style="text-align: center;">
+            <button id="crearPedido" style="margin: 1% auto;">CREAR</button>
+        </div>
+
+    </form>
+    
+</body>
+</html>

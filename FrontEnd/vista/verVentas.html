@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ver Ventas</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="module" src="/dist/verVentas.js"></script>
+    <link rel="stylesheet" href="/vista/css/normalize.css">
+    <link rel="stylesheet" href="/vista/css/style.css">
+    <style>
+        form{
+            width: 50%;
+            
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Administrador de Ventas</h1>
+    </header>
+
+    <nav>
+        <a href="cargarVentas.html">Cargar Ventas</a>
+        <a href="verVentas.html">Buscar/Borrar Ventas</a>
+        <a href="editarVentas.html">Editar Ventas</a>
+    </nav>
+
+    <h1>Pedidos de venta</h1>
+    
+    <form style="margin: 3% auto; text-align: center; max-width: 30%;">
+
+        <label>ID a buscar: </label><input id="idBuscado" type="number"><br><br>
+        <label>Fecha minima: </label><input id="fechaMinima" type="date"><br><br>
+        <label>Fecha maxima: </label><input id="fechaMaxima" type="date"><br><br>
+        <button style="margin: auto 0%;" type="button" id="botonBuscar">BUSCAR</button>
+
+    </form>
+
+    <table>
+
+        <thead>
+            
+            <tr>
+                <td>ID</td>
+                <td>Cliente</td>
+                <td>Fecha</td>
+                <td>Forma de pago</td>
+                <td>Precio total</td>
+                <td>Info Completa</td>
+            </tr>
+            
+        </thead>
+
+        <tbody id="tableBody">
+            
+        </tbody>
+
+    </table>
+
+    <form style="text-align: center; margin: 4% auto; width: 30%;">
+
+        <label>ID venta a borrar: </label><input id="idBorrar" type="number"><br>
+        <button id="botonBorrar">BORRAR</button>
+        <br>
+        <button type="button" id="botonRedirigir">PDFs</button>
+
+        <script>
+            
+            document.getElementById('botonRedirigir').addEventListener('click', function() {
+                
+                window.location.href = '/vista/mostrarTodoPdf.html';
+            });
+        </script>
+
+    </form>
+
+</body>
+</html>
