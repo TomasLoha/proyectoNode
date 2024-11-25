@@ -1,5 +1,6 @@
+import { PedidoVenta } from "models/PedidoVenta";
 
-import { PedidoVenta } from "./modelos";
+
 
 
     function buscarPedidosVentas(): void {
@@ -137,30 +138,32 @@ import { PedidoVenta } from "./modelos";
     
         try {
             // Obtener el pedido
-            const pedidoVenta = await $.ajax({
+            $.ajax({
                 url: `http://localhost:3000/admin/service/pedido_venta/${idBorrar}`,
                 method: "GET",
-                dataType: "json"
-            });
-    
-            if (!pedidoVenta.length) {
-                alert(`No se encontró un pedido con ID = ${idBorrar}`);
-                return;
-            }
-    
-            const pedido = pedidoVenta[0];
-            pedido.existe = 0; // Borrado lógico
-    
-            // Actualizar el pedido
-            await $.ajax({
+                success: (data) => {
+                    console.log(data);
+                    if (data.length > 0) {
+                        const pedidoVenta = data[0];  
+                        pedidoVenta.existe = 0;
+                        console.log("Pedido:", pedidoVenta);
+                        // Actualizar el pedido
+                $.ajax({
                 url: `http://localhost:3000/admin/service/pedido_venta/UPDATE/${idBorrar}`,
                 method: "PUT",
                 contentType: "application/json",
-                data: JSON.stringify(pedido)
+                data: JSON.stringify(pedidoVenta)
+                });
+                    } else {
+                        alert("No se encontró el pedido.");
+                    }
+                },
+                error: () => {
+                    alert(`No existe el pedido de venta con ID = ${idBorrar}`);
+                }
             });
-    
-            alert(`Pedido con ID = ${pedido.id} borrado exitosamente!!!`);
-            location.reload();
+
+            
         } catch (error) {
             console.error("Error al procesar la solicitud:", error);
             alert(`Error al intentar borrar el pedido con ID = ${idBorrar}`);

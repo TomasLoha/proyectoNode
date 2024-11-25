@@ -1,212 +1,212 @@
 
-import { Cliente } from "models/Cliente";
-import { PedidoVenta } from "models/PedidoVenta";
-import { PedidoVentaDetalle } from "models/PedidoVentaDetalle";
-import { Producto } from "models/Producto";
+// import { Cliente } from "models/Cliente";
+// import { PedidoVenta } from "models/PedidoVenta";
+// import { PedidoVentaDetalle } from "models/PedidoVentaDetalle";
+// import { Producto } from "models/Producto";
 
 
     
-    let detalles: PedidoVentaDetalle[] = [];
-    let totalPedido: number = 0;
+//     let detalles: PedidoVentaDetalle[] = [];
+//     let totalPedido: number = 0;
 
 
-    function buscarClientes(){
+//     function buscarClientes(){
 
-        let clientes = $("#clientes");
+//         let clientes = $("#clientes");
 
-        $.ajax({
+//         $.ajax({
 
-            url: `http://localhost:3000/admin/service/clientes`,
-            method: "GET",
-            success: (arrayClientes: Cliente[])=>{
+//             url: `http://localhost:3000/admin/service/clientes`,
+//             method: "GET",
+//             success: (arrayClientes: Cliente[])=>{
 
-                arrayClientes.forEach((cliente: Cliente)=>{
+//                 arrayClientes.forEach((cliente: Cliente)=>{
 
-                    let option: string = `<option value="${cliente.id}">${cliente.razonSocial}</option>`;
+//                     let option: string = `<option value="${cliente.id}">${cliente.razonSocial}</option>`;
 
-                    clientes.append(option);
+//                     clientes.append(option);
 
-                })
+//                 })
 
-            },
-            error: ()=>{
-                alert("No se encuentran clientes")
-            }
+//             },
+//             error: ()=>{
+//                 alert("No se encuentran clientes")
+//             }
 
-        })
+//         })
 
-    }
+//     }
 
-    function buscarProductos(){
+//     function buscarProductos(){
 
-        let productos = $("#productos");
+//         let productos = $("#productos");
 
-        $.ajax({
+//         $.ajax({
 
-            url: `http://localhost:3000/admin/service/productos`,
-            method: "GET",
-            success: (arrayProductos: Producto[])=>{
+//             url: `http://localhost:3000/admin/service/productos`,
+//             method: "GET",
+//             success: (arrayProductos: Producto[])=>{
 
-                arrayProductos.forEach((producto: Producto)=>{
+//                 arrayProductos.forEach((producto: Producto)=>{
 
-                    let option: string = `<option value="${producto.id}">${producto.denominacion} | Precio: $${producto.precioVenta}</option>`;
+//                     let option: string = `<option value="${producto.id}">${producto.denominacion} | Precio: $${producto.precioVenta}</option>`;
 
-                    productos.append(option);
+//                     productos.append(option);
 
-                })
+//                 })
 
-            },
-            error: ()=>{
-                alert("No se encuentran productos")
-            }
+//             },
+//             error: ()=>{
+//                 alert("No se encuentran productos")
+//             }
 
-        })
+//         })
 
-    }
+//     }
 
 
 
-    $("#agregarProducto").on("click", function CrearDetalle(event){
-        event.preventDefault();        
+//     $("#agregarProducto").on("click", function CrearDetalle(event){
+//         event.preventDefault();        
     
-        let idProducto = $("#productos").val();
-        let cantidadProducto = parseInt($("#cantidadProducto").val() as string);
+//         let idProducto = $("#productos").val();
+//         let cantidadProducto = parseInt($("#cantidadProducto").val() as string);
 
-        if (idProducto && cantidadProducto) {
+//         if (idProducto && cantidadProducto) {
             
-            let precioProducto = 0;
+//             let precioProducto = 0;
             
-            $.ajax({
+//             $.ajax({
 
-                url: `http://localhost:3000/admin/service/productos/${idProducto}`,
-                method: "GET",
-                success: (productos)=>{
-                    const producto = productos[0];
-                    precioProducto = producto.precioVenta;
+//                 url: `http://localhost:3000/admin/service/productos/${idProducto}`,
+//                 method: "GET",
+//                 success: (productos)=>{
+//                     const producto = productos[0];
+//                     precioProducto = producto.precioVenta;
 
-                    let precioSubtotal = (precioProducto*cantidadProducto);
+//                     let precioSubtotal = (precioProducto*cantidadProducto);
     
-                    totalPedido += precioSubtotal;
+//                     totalPedido += precioSubtotal;
 
-                    let detalles: PedidoVentaDetalle;
+//                     let detalles: PedidoVentaDetalle;
 
-                    let detalle: PedidoVentaDetalle = {
-                        id: 0,
-                        pedidoVenta: PedidoVenta,
-                        producto: producto,
-                        cantidad: Number(cantidadProducto),
-                        subtotal: precioSubtotal,
-                        existe: 1
-                    }
+//                     let detalle: PedidoVentaDetalle = {
+//                         id: 0,
+//                         pedidoVenta: PedidoVenta,
+//                         producto: producto,
+//                         cantidad: Number(cantidadProducto),
+//                         subtotal: precioSubtotal,
+//                         existe: 1
+//                     }
     
-                    detalles.push(detalle)
+//                     detalles.push(detalle)
     
-                    actualizarTotalPedido();
+//                     actualizarTotalPedido();
 
-                    $("#cantidadProducto").val('');
+//                     $("#cantidadProducto").val('');
                     
-                }
-            })             
+//                 }
+//             })             
             
 
 
-        }else{
-            alert("No ingreso ninguna cantidad!!!")
-        }
+//         }else{
+//             alert("No ingreso ninguna cantidad!!!")
+//         }
 
         
-    });
+//     });
 
               
 
         
 
 
-    function actualizarTotalPedido(){
+//     function actualizarTotalPedido(){
 
-        $("#totalPedido").text(`${totalPedido}`)
+//         $("#totalPedido").text(`${totalPedido}`)
 
-    }
+//     }
 
-    async function subirVenta(){
+//     async function subirVenta(){
 
-        if (totalPedido != 0) {
+//         if (totalPedido != 0) {
 
-            let id = 0;
-            let idcliente = $("#clientes").val();
-            let fechaPedido = $("#fechaPedido").val();
-            let nroComprobante = $("#comprobantePedido").val();
-            let formaPago = $("#formaPago").val();
-            let observaciones = $("#observaciones").val();
-            let totalPedido = parseFloat($("#totalPedido").text());
+//             let id = 0;
+//             let idcliente = $("#clientes").val();
+//             let fechaPedido = $("#fechaPedido").val();
+//             let nroComprobante = $("#comprobantePedido").val();
+//             let formaPago = $("#formaPago").val();
+//             let observaciones = $("#observaciones").val();
+//             let totalPedido = parseFloat($("#totalPedido").text());
             
-            if (idcliente && fechaPedido && nroComprobante && formaPago && observaciones && totalPedido) {
+//             if (idcliente && fechaPedido && nroComprobante && formaPago && observaciones && totalPedido) {
                 
-                let pedido_venta: PedidoVenta = {
-                    id: id,
-                    idcliente: idcliente ? parseInt(idcliente as string) : 0,
-                    fechaPedido: fechaPedido as string,
-                    nroComprobante: nroComprobante ? parseInt(nroComprobante as string) : 0,
-                    formaPago: formaPago as string,
-                    observaciones: observaciones as string,
-                    totalPedido: totalPedido,
-                    existe: 1
-                }
+//                 let pedido_venta: PedidoVenta = {
+//                     id: id,
+//                     idcliente: idcliente ? parseInt(idcliente as string) : 0,
+//                     fechaPedido: fechaPedido as string,
+//                     nroComprobante: nroComprobante ? parseInt(nroComprobante as string) : 0,
+//                     formaPago: formaPago as string,
+//                     observaciones: observaciones as string,
+//                     totalPedido: totalPedido,
+//                     existe: 1
+//                 }
                 
-                const response = await $.ajax({
+//                 const response = await $.ajax({
 
-                    url: `http://localhost:3000/admin/service/pedido_venta/CREATE`,
-                    method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(pedido_venta)
-                })
+//                     url: `http://localhost:3000/admin/service/pedido_venta/CREATE`,
+//                     method: "POST",
+//                     contentType: "application/json",
+//                     data: JSON.stringify(pedido_venta)
+//                 })
 
 
-                id = response.id;
+//                 id = response.id;
 
-                for(const detalle of detalles){
+//                 for(const detalle of detalles){
 
-                    detalle.idpedidoventa = id;
+//                     detalle.idpedidoventa = id;
 
-                    await $.ajax({
+//                     await $.ajax({
         
-                        url: `http://localhost:3000/admin/service/pedido_venta_detalle/CREATE`,
-                        method: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(detalle),
-                        success: (response)=>{
+//                         url: `http://localhost:3000/admin/service/pedido_venta_detalle/CREATE`,
+//                         method: "POST",
+//                         contentType: "application/json",
+//                         data: JSON.stringify(detalle),
+//                         success: (response)=>{
                             
-                        },
-                        error: ()=>{
-                            alert("No se pudo cargar el detalle")
-                        }
+//                         },
+//                         error: ()=>{
+//                             alert("No se pudo cargar el detalle")
+//                         }
         
-                    })
+//                     })
         
-                }
+//                 }
 
-                alert("El pedido y los detalles se cargaron exitosamente!!!")
+//                 alert("El pedido y los detalles se cargaron exitosamente!!!")
 
-                location.reload();                
+//                 location.reload();                
 
-            }else{
-                alert("Debe completar todos los datos del pedido para poder crearlo!")
-            }
+//             }else{
+//                 alert("Debe completar todos los datos del pedido para poder crearlo!")
+//             }
 
-        }else{
-            alert("Debe agregar por lo menos 1 producto al pedido!!!")
-        }
+//         }else{
+//             alert("Debe agregar por lo menos 1 producto al pedido!!!")
+//         }
 
-    }
+//     }
 
-    $("#crearPedido").on("click", (event)=>{
-        event.preventDefault();
+//     $("#crearPedido").on("click", (event)=>{
+//         event.preventDefault();
 
 
-        subirVenta();
+//         subirVenta();
 
-    })
+//     })
 
-    buscarClientes();
-    buscarProductos();
-    actualizarTotalPedido();
+//     buscarClientes();
+//     buscarProductos();
+//     actualizarTotalPedido();

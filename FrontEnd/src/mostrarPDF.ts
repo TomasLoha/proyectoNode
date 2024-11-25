@@ -1,4 +1,4 @@
-import { PedidoVentaDetalle } from "modelos";
+import { PedidoVentaDetalle } from "./models/PedidoVentaDetalle";
 import { Cliente } from "models/Cliente";
 import { PedidoVenta } from "models/PedidoVenta";
 import { Producto } from "models/Producto";
