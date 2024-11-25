@@ -26,7 +26,7 @@ import { AppDataSource } from "../conexion";
         const clienteRepository = AppDataSource.getRepository(Cliente);
 
         
-        const cliente = await clienteRepository.findBy({id : Number(id)});
+        const cliente = await clienteRepository.findOneBy({id : Number(id)});
 
         
         res.status(200).json(cliente);

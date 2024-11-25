@@ -31,7 +31,7 @@ const getClientesid = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     const { id } = req.params;
     try {
         const clienteRepository = conexion_1.AppDataSource.getRepository(Cliente_1.Cliente);
-        const cliente = yield clienteRepository.findBy({ id: Number(id) });
+        const cliente = yield clienteRepository.findOneBy({ id: Number(id) });
         res.status(200).json(cliente);
     }
     catch (error) {
