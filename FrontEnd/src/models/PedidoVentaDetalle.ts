@@ -1,6 +1,7 @@
-import { PedidoVenta, Producto } from "../modelos";
+import { PedidoVenta } from "./PedidoVenta";
+import { Producto } from "./Producto";
 
-type PedidoVentaDetalle = {
+export type PedidoVentaDetalle = {
     id: number
     pedidoVenta: PedidoVenta; // Relacionado con PedidoVenta
     producto: Producto; // Relacionado con Producto

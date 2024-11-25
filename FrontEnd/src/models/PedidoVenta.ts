@@ -1,4 +1,5 @@
-import { Cliente, PedidoVentaDetalle } from "../modelos";
+import { Cliente } from "./Cliente";
+import { PedidoVentaDetalle } from "./PedidoVentaDetalle";
 
 export type PedidoVenta = {
     id: number;
