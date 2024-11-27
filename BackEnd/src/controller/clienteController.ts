@@ -1,6 +1,6 @@
 // src/controllers/ClienteController.ts
 import { Request, Response } from 'express';
-import { Cliente } from '../models/Cliente'; // Modelo de cliente si es necesario para validaciones o transformaciones
+import { Cliente } from '../models/Cliente'; 
 import { AppDataSource } from "../conexion";
 
 

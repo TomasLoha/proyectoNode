@@ -146,7 +146,7 @@ function actualizarPedido() {
                     return alert("Todos los detalles del pedido deben tener sus campos completos!");
                 }
             }
-            if (detallesLlenos) {
+            if (detallesLlenos && totalPedido) {
                 let cliente = yield $.ajax({
                     url: `http://localhost:3000/admin/service/clientes/${idcliente}`,
                     method: "GET"
@@ -175,6 +175,9 @@ function actualizarPedido() {
                         console.error(`Ocurrio un error al intentar actualizar:`, error);
                     }
                 });
+            }
+            else {
+                alert(`La venta debe contener por lo menos un detalle!`);
             }
         }
         else {

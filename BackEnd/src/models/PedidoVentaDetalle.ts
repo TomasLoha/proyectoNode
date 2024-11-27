@@ -19,6 +19,6 @@ export class PedidoVentaDetalle {
     @Column({ type: "decimal", precision: 10, scale: 2 })
     subtotal: string;
 
-    @Column({ type: "int", default: 1 }) // Ahora es de tipo number (integer en la DB)
+    @Column({ type: "int", default: 1 }) 
     existe: number;
 }

@@ -37,8 +37,7 @@ __decorate([
     __metadata("design:type", String)
 ], PedidoVentaDetalle.prototype, "subtotal", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ type: "int", default: 1 }) // Ahora es de tipo number (integer en la DB)
-    ,
+    (0, typeorm_1.Column)({ type: "int", default: 1 }),
     __metadata("design:type", Number)
 ], PedidoVentaDetalle.prototype, "existe", void 0);
 exports.PedidoVentaDetalle = PedidoVentaDetalle = __decorate([

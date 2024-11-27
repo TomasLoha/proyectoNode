@@ -7,7 +7,6 @@ const express_1 = __importDefault(require("express"));
 const rutas_1 = __importDefault(require("./rutas"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
-const port = 3000;
 // Configuración de CORS
 // app.use(morgan('dev'));
 app.use((0, cors_1.default)()); // Habilita CORS para todas las rutas

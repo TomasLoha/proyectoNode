@@ -201,7 +201,7 @@ import { Producto } from "models/Producto";
                 }
             }            
 
-            if (detallesLlenos) {
+            if (detallesLlenos && totalPedido) {
 
                 let cliente: Cliente = await $.ajax({
                     url: `http://localhost:3000/admin/service/clientes/${idcliente}`,
@@ -239,6 +239,8 @@ import { Producto } from "models/Producto";
         
                 })
                 
+            }else{
+                alert(`La venta debe contener por lo menos un detalle!`)
             }
 
         }else{

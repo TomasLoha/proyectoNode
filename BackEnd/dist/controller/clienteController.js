@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getClientesid = exports.getClientes = void 0;
-const Cliente_1 = require("../models/Cliente"); // Modelo de cliente si es necesario para validaciones o transformaciones
+const Cliente_1 = require("../models/Cliente");
 const conexion_1 = require("../conexion");
 const getClientes = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {

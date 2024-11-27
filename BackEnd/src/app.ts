@@ -5,7 +5,6 @@ import cors from "cors";
 import morgan from "morgan";
 
 const app = express();
-const port = 3000;
 
 // Configuración de CORS
 // app.use(morgan('dev'));
